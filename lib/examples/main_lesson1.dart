@@ -1,38 +1,27 @@
 import 'dart:async';
-import 'dart:math';
 
-import 'package:flama_game/components2/boy_component.dart';
-import 'package:flama_game/components2/meteor_component.dart';
-import 'package:flame/collisions.dart';
+import 'package:flama_game/components/boy_sprite_component.dart';
+import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
-class MyGame2 extends FlameGame
+class MyGame extends FlameGame
     with
-        // KeyboardEvents, /* TapCallbacks*/
+        KeyboardEvents, /* TapCallbacks*/
         HasKeyboardHandlerComponents,
         TapCallbacks,
         HasCollisionDetection {
-  double elapsedTime = 0.0;
   @override
   FutureOr<void> onLoad() {
-    add(BoyComponent());
-    add(MeteorCompanent());
+    add(BoySpriteComponent());
+    // add(CirclePositionCompanent(id: 1));
+    // add(CirclePositionCompanent(id: 2));
+    // add(CirclePositionCompanent(id: 3));
     add(ScreenHitbox());
     return super.onLoad();
   }
 
-  @override
-  update(double dt) {
-    if (elapsedTime > 1.0) {
-      add(MeteorCompanent());
-      elapsedTime = 0.0;
-    }
-
-    elapsedTime += dt;
-    return super.update(dt);
-  }
   // @override
   // KeyEventResult onKeyEvent(
   //   KeyEvent event,
@@ -56,5 +45,5 @@ class MyGame2 extends FlameGame
 }
 
 void main() {
-  runApp(GameWidget(game: MyGame2()));
+  runApp(GameWidget(game: MyGame()));
 }
