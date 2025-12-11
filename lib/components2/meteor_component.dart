@@ -1,14 +1,16 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 
-import 'dart:math';
-import 'package:flama_game/utils/create_animation_by_limit.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/palette.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
+
+import 'package:flama_game/utils/create_animation_by_limit.dart';
 
 class MeteorCompanent extends SpriteAnimationComponent with CollisionCallbacks {
   static const int circleSpeed = 250;
@@ -21,12 +23,18 @@ class MeteorCompanent extends SpriteAnimationComponent with CollisionCallbacks {
   double posY = 0.0 - circleHeight;
   final ShapeHitbox hitbox = CircleHitbox();
 
+  Vector2 cameraPosition;
+  MeteorCompanent({required this.cameraPosition}) : super() {
+    debugMode = true;
+  }
+
   @override
   FutureOr<void> onLoad() async {
     final FlutterView view =
         WidgetsBinding.instance.platformDispatcher.views.first;
 
     screenWidth = MediaQueryData.fromView(view).size.width;
+    // screenHeight = 2450;
     screenHeight = MediaQueryData.fromView(view).size.height;
     // circleDirectionX = random.nextInt(2) == 1 ? 1 : -1;
     // circleDirectionY = random.nextInt(2) == 1 ? 1 : -1;
@@ -35,7 +43,10 @@ class MeteorCompanent extends SpriteAnimationComponent with CollisionCallbacks {
 
     // position = Vector2(centerX, centerY);
 
-    position = Vector2(random.nextDouble() * screenWidth, posY);
+    position = Vector2(
+      random.nextDouble() * screenWidth,
+      cameraPosition.y - posY,
+    );
     // position = Vector2(random.nextDouble() * 500, random.nextDouble() * 500);
 
     size = Vector2(circleWidth, circleHeight);
@@ -112,7 +123,7 @@ class MeteorCompanent extends SpriteAnimationComponent with CollisionCallbacks {
     // position.x += circleDirectionX * circleSpeed * dt;
     position.y += circleSpeed * dt;
     // position.y += circleDirectionY * circleSpeed * dt;
-    if (position.y > screenHeight) {
+    if (position.y > cameraPosition.y + screenHeight) {
       removeFromParent();
     }
     super.update(dt);

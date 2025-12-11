@@ -1,9 +1,7 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:flama_game/components2/character.dart';
-import 'package:flama_game/components2/meteor_component.dart';
-import 'package:flama_game/utils/create_animation_by_limit.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
@@ -11,12 +9,19 @@ import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class BoyComponent extends Character {
-  int count = 0;
+import 'package:flama_game/components2/character.dart';
+import 'package:flama_game/components2/meteor_component.dart';
+import 'package:flama_game/utils/create_animation_by_limit.dart';
 
+class BoyComponent extends Character {
+  Vector2 mapSize;
+  BoyComponent({required this.mapSize}) : super() {
+    anchor = Anchor.center;
+    debugMode = true;
+  }
+  int count = 0;
   @override
   FutureOr<void> onLoad() async {
-    anchor = Anchor.center;
     // sprite = await Sprite.load('.png');
     final spriteBoy = await Flame.images.load('new_sprite.png');
     final spriteSheet = SpriteSheet(
@@ -91,7 +96,7 @@ class BoyComponent extends Character {
     centerY = (screenHeight / 2) - (spriteSheetHeight / 2);
 
     position = Vector2(centerX, centerY);
-    debugMode = true;
+
     add(
       RectangleHitbox(
         position: Vector2(40, 0),
@@ -217,7 +222,7 @@ class BoyComponent extends Character {
     posX = 0;
     posY = 0;
 
-    if (position.y < 900 - size[1]) {
+    if (position.y < mapSize.y - size[1]) {
       velocity.y += gravity;
       position.y += dt * velocity.y;
       inGround = false;
@@ -232,7 +237,7 @@ class BoyComponent extends Character {
     if (other is ScreenHitbox) {
       if (intersectionPoints.first[0] <= 0.0) {
         colisionXLeft = true;
-      } else if (intersectionPoints.first[0] >= (screenWidth - 65)) {
+      } else if (intersectionPoints.first[0] >= (mapSize.x - centerX)) {
         colisionXRight = true;
       }
     }
